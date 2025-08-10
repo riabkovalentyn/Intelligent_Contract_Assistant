@@ -1,0 +1,54 @@
+1) Create venv and install requirements
+```
+py -3.11 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip setuptools wheel
+pip install -r requirements.txt
+python -m spacy download en_core_web_sm
+```
+
+2) Configure .env
+```
+OPENAI_API_KEY=your_key_here
+EMBEDDING_PROVIDER=openai   # or local
+VECTOR_STORE=chroma         # or faiss
+DATA_DIR=./data
+VECTOR_DIR=./data/vector_store
+```
+
+3) Put a sample PDF at `data/samples/sample_contract.pdf`.
+
+## CLI
+
+- Ingest:
+```
+python -m src.app.cli ingest --pdf data/samples/sample_contract.pdf
+```
+
+- Ask:
+```
+python -m src.app.cli ask -q "What is the termination clause?" --topk 4
+```
+
+- NER:
+```
+python -m src.app.cli ner --pdf data/samples/sample_contract.pdf
+```
+
+Notes:
+- Without OPENAI_API_KEY, embeddings fall back to local FakeEmbeddings. LLM still requires an API key for best answers.
+- Switch VECTOR_STORE to `faiss` for a local, file-based index.
+
+## Streamlit
+
+```
+streamlit run src/app/streamlit_app.py
+```
+
+Upload a PDF, ask questions, view sources, and leave feedback.
+
+## Tests
+
+```
+pytest -q
+```
