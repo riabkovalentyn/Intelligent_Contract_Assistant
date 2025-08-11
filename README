@@ -1,3 +1,5 @@
+# Intelligent Contract Assistant
+
 1) Create venv and install requirements
 ```
 py -3.11 -m venv .venv
@@ -14,22 +16,43 @@ EMBEDDING_PROVIDER=openai   # or local
 VECTOR_STORE=chroma         # or faiss
 DATA_DIR=./data
 VECTOR_DIR=./data/vector_store
+CHUNK_SIZE=1200
+CHUNK_OVERLAP=150
 ```
 
 3) Put a sample PDF at `data/samples/sample_contract.pdf`.
 
-## CLI
+## One-command start (recommended)
+
+- Streamlit UI (auto-venv, deps, optional pre-ingest):
+```
+powershell -ExecutionPolicy Bypass -File .\run.ps1 -Mode streamlit -Pdf .\data\samples\sample_contract.pdf
+```
+
+- CLI Q&A:
+```
+powershell -ExecutionPolicy Bypass -File .\run.ps1 -Mode cli -Pdf .\data\samples\sample_contract.pdf -Question "Who owns the IP?" -TopK 4
+```
+
+- NER:
+```
+powershell -ExecutionPolicy Bypass -File .\run.ps1 -Mode ner -Pdf .\data\samples\sample_contract.pdf
+```
+
+Options:
+- `-ForceRebuild` — пересоздать индекс
+- `-NoHash` — не использовать хэш‑папки (писать в `data/vector_store`)
+
+## Classic CLI
 
 - Ingest:
 ```
 python -m src.app.cli ingest --pdf data/samples/sample_contract.pdf
 ```
-
 - Ask:
 ```
 python -m src.app.cli ask -q "What is the termination clause?" --topk 4
 ```
-
 - NER:
 ```
 python -m src.app.cli ner --pdf data/samples/sample_contract.pdf
@@ -40,15 +63,11 @@ Notes:
 - Switch VECTOR_STORE to `faiss` for a local, file-based index.
 
 ## Streamlit
-
 ```
 streamlit run src/app/streamlit_app.py
 ```
 
-Upload a PDF, ask questions, view sources, and leave feedback.
-
 ## Tests
-
 ```
 pytest -q
 ```

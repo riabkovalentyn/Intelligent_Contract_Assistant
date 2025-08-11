@@ -12,6 +12,8 @@ class AppConfig:
     data_dir: str = field(default_factory=lambda: os.getenv("DATA_DIR", "./data"))
     vector_dir: str = field(default_factory=lambda: os.getenv("VECTOR_DIR", "./data/vector_store"))
     openai_api_key: str = field(default_factory=lambda: os.getenv("OPENAI_API_KEY", ""))
+    chunk_size: int = field(default_factory=lambda: int(os.getenv("CHUNK_SIZE", "1200")))
+    chunk_overlap: int = field(default_factory=lambda: int(os.getenv("CHUNK_OVERLAP", "200")))
 
     def ensure_directories(self):
         os.makedirs(self.data_dir, exist_ok=True)
